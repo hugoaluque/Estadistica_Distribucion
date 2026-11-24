@@ -1,0 +1,1627 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Distribución Normal y Distribución Muestral: Fundamentos y Aplicaciones</title>
+  <style>
+    :root {
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --text-main: #1e293b;
+      --text-muted: #475569;
+      --text-light: #64748b;
+      --border-color: #e2e8f0;
+      --forest-50: #f2f7f4;
+      --forest-100: #e0ede5;
+      --forest-200: #c3dccd;
+      --forest-600: #2d6a4f;
+      --forest-700: #1b4332;
+      --forest-800: #143326;
+      --slate-900: #0f172a;
+      --slate-800: #1e293b;
+      --amber-50: #fffbeb;
+      --amber-200: #fde68a;
+      --amber-900: #78350f;
+      --sky-50: #f0f9ff;
+      --sky-200: #bae6fd;
+      --sky-900: #0c4a6e;
+      --crimson-600: #dc2626;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Tipografía matemática nativa */
+    .math-var {
+      font-family: "Georgia", "Times New Roman", serif;
+      font-style: italic;
+    }
+
+    .math-overline {
+      text-decoration: overline;
+      font-family: "Georgia", "Times New Roman", serif;
+      font-style: italic;
+    }
+
+    .eq-box {
+      background-color: var(--bg-subtle);
+      border-left: 4px solid var(--forest-700);
+      border-radius: 0 10px 10px 0;
+      padding: 1rem 1.25rem;
+      margin: 0.75rem 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 1.25rem;
+      font-family: "Georgia", "Times New Roman", serif;
+      font-size: 1.08rem;
+      color: var(--slate-900);
+      overflow-x: auto;
+    }
+
+    .frac {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      vertical-align: middle;
+      margin: 0 0.25rem;
+      text-align: center;
+    }
+
+    .frac > span:first-child {
+      border-bottom: 1.5px solid currentColor;
+      padding: 0 0.35rem 0.15rem;
+    }
+
+    .frac > span:last-child {
+      padding: 0.15rem 0.35rem 0;
+    }
+
+    .sqrt {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .sqrt-rad {
+      border-top: 1.4px solid currentColor;
+      padding-left: 2px;
+      padding-right: 2px;
+    }
+
+    /* Barra de navegación */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .nav-container {
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-weight: 700;
+      color: var(--slate-900);
+      font-size: 0.98rem;
+    }
+
+    .brand-badge {
+      background: var(--forest-700);
+      color: #ffffff;
+      padding: 0.35rem 0.6rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--forest-700);
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+    }
+
+    /* Hero / Portada */
+    .hero {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-color);
+      padding: 3rem 1.25rem;
+    }
+
+    .hero-inner {
+      max-width: 1060px;
+      margin: 0 auto;
+    }
+
+    .pill {
+      display: inline-block;
+      background: var(--forest-50);
+      color: var(--forest-700);
+      border: 1px solid var(--forest-200);
+      border-radius: 999px;
+      padding: 0.25rem 0.85rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-bottom: 0.9rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.75rem, 3.2vw, 2.35rem);
+      color: var(--slate-900);
+      line-height: 1.22;
+      margin-bottom: 0.85rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      max-width: 780px;
+      font-size: 1.03rem;
+    }
+
+    /* Contenedor principal */
+    main {
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 3.25rem;
+    }
+
+    .section-header {
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 0.65rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-kicker {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--forest-700);
+      margin-bottom: 0.2rem;
+    }
+
+    .section-header h2 {
+      font-size: 1.5rem;
+      color: var(--slate-900);
+    }
+
+    .section-header p {
+      font-size: 0.93rem;
+      color: var(--text-muted);
+      margin-top: 0.35rem;
+    }
+
+    /* Tarjetas */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1.75rem;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    }
+
+    .card h3 {
+      font-size: 1.2rem;
+      color: var(--slate-900);
+      margin-bottom: 0.75rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
+
+    @media (max-width: 860px) {
+      .grid-2, .grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .prop-box {
+      background: var(--bg-page);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1rem 1.1rem;
+    }
+
+    .prop-box h4 {
+      font-size: 0.92rem;
+      color: var(--slate-900);
+      margin-bottom: 0.35rem;
+    }
+
+    .prop-box p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    /* Ejercicios interactivos previos a la calculadora */
+    .practice-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1rem;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .practice-card:hover {
+      box-shadow: 0 6px 16px rgba(27, 67, 50, 0.08);
+    }
+
+    .domain-tag {
+      display: inline-block;
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 0.2rem 0.65rem;
+      border-radius: 6px;
+      background: var(--forest-50);
+      color: var(--forest-700);
+      border: 1px solid var(--forest-200);
+      margin-bottom: 0.45rem;
+    }
+
+    .param-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin: 0.65rem 0;
+      background: var(--bg-page);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .param-table th, .param-table td {
+      padding: 0.45rem 0.65rem;
+      border-bottom: 1px solid var(--border-color);
+      text-align: left;
+    }
+
+    .param-table th {
+      background: var(--bg-subtle);
+      color: var(--slate-800);
+      font-weight: 600;
+    }
+
+    .param-table td:last-child {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-weight: 600;
+      color: var(--forest-700);
+      text-align: right;
+    }
+
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.4rem;
+    }
+
+    .btn-load {
+      flex: 1;
+      min-width: 140px;
+      background: var(--forest-700);
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.58rem 0.85rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      text-align: center;
+    }
+
+    .btn-load:hover {
+      background: var(--forest-800);
+    }
+
+    .btn-load:active {
+      transform: scale(0.98);
+    }
+
+    .btn-load.secondary {
+      background: #1e3a8a;
+    }
+
+    .btn-load.secondary:hover {
+      background: #172554;
+    }
+
+    details.solution-box {
+      border-top: 1px solid var(--border-color);
+      padding-top: 0.75rem;
+      margin-top: 0.25rem;
+    }
+
+    details.solution-box summary {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--forest-700);
+      cursor: pointer;
+      user-select: none;
+      list-style: none;
+    }
+
+    details.solution-box summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .solution-content {
+      margin-top: 0.75rem;
+      background: var(--bg-page);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.85rem;
+      font-size: 0.84rem;
+      color: var(--text-main);
+    }
+
+    .solution-content p {
+      margin-bottom: 0.45rem;
+    }
+
+    /* Calculadora Interactiva */
+    .calc-wrapper {
+      background: #ffffff;
+      border: 2px solid var(--forest-200);
+      border-radius: 16px;
+      padding: 1.75rem;
+      box-shadow: 0 8px 24px rgba(27, 67, 50, 0.06);
+      transition: box-shadow 0.4s ease, border-color 0.4s ease;
+    }
+
+    .calc-wrapper.highlight-pulse {
+      border-color: var(--forest-600);
+      box-shadow: 0 0 0 4px rgba(45, 106, 79, 0.18);
+    }
+
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 880px) {
+      .calc-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .calc-controls {
+      background: var(--bg-page);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.79rem;
+      font-weight: 700;
+      color: var(--slate-800);
+      margin-bottom: 0.3rem;
+    }
+
+    .field input, .field select {
+      width: 100%;
+      padding: 0.55rem 0.7rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      background: #ffffff;
+      color: var(--slate-900);
+      font-family: inherit;
+    }
+
+    .field input:focus, .field select:focus {
+      outline: none;
+      border-color: var(--forest-600);
+      box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.15);
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.55rem;
+      padding-top: 0.65rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .metric-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.6rem 0.45rem;
+      text-align: center;
+    }
+
+    .metric-card.primary {
+      background: var(--forest-50);
+      border-color: var(--forest-200);
+    }
+
+    .metric-label {
+      font-size: 0.7rem;
+      color: var(--text-light);
+      font-weight: 600;
+    }
+
+    .metric-value {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--slate-900);
+      margin-top: 0.2rem;
+    }
+
+    .metric-card.primary .metric-value {
+      color: var(--forest-700);
+    }
+
+    .svg-stage {
+      background: var(--bg-page);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1rem;
+    }
+
+    .svg-caption {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .legend-items {
+      display: flex;
+      gap: 0.9rem;
+      flex-wrap: wrap;
+      font-size: 0.76rem;
+    }
+
+    .legend-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+
+    /* Casos Python */
+    .case-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 1.75rem;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    }
+
+    .case-header {
+      background: var(--slate-900);
+      color: #ffffff;
+      padding: 1rem 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .case-badge {
+      background: var(--forest-600);
+      color: #ffffff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      margin-right: 0.6rem;
+    }
+
+    .case-body {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .problem-banner {
+      border-radius: 10px;
+      padding: 1rem 1.2rem;
+      font-size: 0.91rem;
+    }
+
+    .banner-amber {
+      background: var(--amber-50);
+      border: 1px solid var(--amber-200);
+    }
+
+    .banner-forest {
+      background: var(--forest-50);
+      border: 1px solid var(--forest-200);
+    }
+
+    .banner-sky {
+      background: var(--sky-50);
+      border: 1px solid var(--sky-200);
+    }
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.45rem;
+    }
+
+    .btn-copy {
+      background: var(--slate-800);
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      padding: 0.4rem 0.75rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-copy:hover {
+      background: var(--forest-700);
+    }
+
+    pre.code-block {
+      background: var(--slate-900);
+      color: #f8fafc;
+      padding: 1.15rem;
+      border-radius: 10px;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.82rem;
+      line-height: 1.55;
+    }
+
+    .console-out {
+      background: var(--bg-subtle);
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 0.9rem 1.1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.81rem;
+      color: var(--slate-900);
+      overflow-x: auto;
+    }
+
+    footer {
+      background: #ffffff;
+      border-top: 1px solid var(--border-color);
+      padding: 1.5rem 1.25rem;
+      font-size: 0.82rem;
+      color: var(--text-light);
+    }
+
+    .footer-inner {
+      max-width: 1060px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    @media print {
+      header, .btn-load, .btn-copy {
+        display: none !important;
+      }
+      body {
+        background: #ffffff;
+      }
+      .card, .practice-card, .calc-wrapper, .case-card {
+        box-shadow: none;
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Barra de Navegación -->
+  <header>
+    <div class="nav-container">
+      <div class="brand">
+        <span class="brand-badge">N(&mu;, &sigma;&sup2;)</span>
+        <span>Estadística Descriptiva  &bull; e Inferencial</span>
+      </div>
+      <nav class="nav-links">
+        <a href="#marco-teorico">1. Marco Teórico</a>
+        <a href="#ejercicios-calculadora">2. Ejercicios Guiados</a>
+        <a href="#calculadora-interactiva">3. Calculadora Z</a>
+        <a href="#casos-python">4. Casos Python</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Portada Académica -->
+  <section class="hero">
+    <div class="hero-inner">
+      <span class="pill">Guía Académica Autocontenida &bull; Inferencia Estadística</span>
+      <h1>Distribución Normal y Distribución Muestral: Fundamentos, Puntaje Z y Aplicaciones</h1>
+      <p>
+        Documento técnico-práctico sobre el modelo gaussiano, estandarización mediante puntaje <span class="math-var">Z</span>, Teorema del Límite Central (TLC), laboratorio gráfico interactivo y resolución computacional en <strong>Python</strong> orientada a calidad del aire, tecnología de la madera, hidrobiología y edafología.
+      </p>
+    </div>
+  </section>
+
+  <main>
+
+    <!-- ===================================================================== -->
+    <!-- SECCIÓN 1: MARCO TEÓRICO Y ECUACIONES EN HTML/CSS NATIVO              -->
+    <!-- ===================================================================== -->
+    <section id="marco-teorico">
+      <div class="section-header">
+        <span class="section-kicker">Sección 01</span>
+        <h2>Marco Teórico y Ecuaciones Fundamentales</h2>
+      </div>
+
+      <div class="card" style="margin-bottom: 1.5rem;">
+        <h3>1.1 Características de la Distribución Normal</h3>
+        <p style="color: var(--text-muted); font-size: 0.94rem;">
+          Una variable aleatoria continua <span class="math-var">X</span> sigue una <strong>distribución normal</strong> con media poblacional <span class="math-var">&mu;</span> y varianza <span class="math-var">&sigma;</span><sup>2</sup>, denotada como <span class="math-var">X</span> &sim; <i>N</i>(<span class="math-var">&mu;</span>, <span class="math-var">&sigma;</span><sup>2</sup>), cuando su Función de Densidad de Probabilidad (FDP) está dada por:
+        </p>
+
+        <div class="eq-box">
+          <span><span class="math-var">f</span>(<span class="math-var">x</span>) =</span>
+          <span class="frac">
+            <span>1</span>
+            <span><span class="math-var">&sigma;</span><span class="sqrt">&radic;<span class="sqrt-rad">2&pi;</span></span></span>
+          </span>
+          <span>&middot; <i>e</i><sup>&minus;&frac12;[(<span class="math-var">x</span> &minus; <span class="math-var">&mu;</span>) / <span class="math-var">&sigma;</span>]&sup2;</sup></span>
+        </div>
+
+        <div class="grid-2" style="margin-top: 1rem;">
+          <div class="prop-box">
+            <h4>Simetría y Unimodalidad</h4>
+            <p>La curva tiene forma de campana simétrica respecto a <span class="math-var">&mu;</span>. En el centro coinciden exactamente la media, la mediana y la moda (<span class="math-var">&mu;</span> = Me = Mo).</p>
+          </div>
+          <div class="prop-box">
+            <h4>Asintoticidad y Área Unitaria</h4>
+            <p>Las colas se extienden indefinidamente hacia &minus;&infin; y +&infin; sin tocar el eje horizontal (<span class="math-var">f</span>(<span class="math-var">x</span>) &gt; 0). El área total bajo la curva es exactamente igual a <strong>1</strong> (100%).</p>
+          </div>
+          <div class="prop-box">
+            <h4>Puntos de Inflexión</h4>
+            <p>La curvatura cambia de concavidad exactamente a una desviación estándar de la media: en <span class="math-var">x</span> = <span class="math-var">&mu;</span> &minus; <span class="math-var">&sigma;</span> y <span class="math-var">x</span> = <span class="math-var">&mu;</span> + <span class="math-var">&sigma;</span>.</p>
+          </div>
+          <div class="prop-box">
+            <h4>Regla Empírica (68% &ndash; 95% &ndash; 99.7%)</h4>
+            <p>El <strong>68.27%</strong> de los datos cae en <span class="math-var">&mu;</span> &plusmn; 1<span class="math-var">&sigma;</span>, el <strong>95.45%</strong> en <span class="math-var">&mu;</span> &plusmn; 2<span class="math-var">&sigma;</span> y el <strong>99.73%</strong> dentro de <span class="math-var">&mu;</span> &plusmn; 3<span class="math-var">&sigma;</span>.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Estandarización -->
+        <div class="card">
+          <h3>1.2 Estandarización y Puntaje Z</h3>
+          <p style="color: var(--text-muted); font-size: 0.91rem;">
+            La estandarización convierte cualquier variable <span class="math-var">X</span> &sim; <i>N</i>(<span class="math-var">&mu;</span>, <span class="math-var">&sigma;</span><sup>2</sup>) en la <strong>Distribución Normal Estándar</strong> <span class="math-var">Z</span> &sim; <i>N</i>(0, 1), midiendo cuántas desviaciones estándar se aleja un valor <span class="math-var">x</span> respecto a <span class="math-var">&mu;</span>:
+          </p>
+          <div class="eq-box">
+            <span><span class="math-var">Z</span> =</span>
+            <span class="frac">
+              <span><span class="math-var">x</span> &minus; <span class="math-var">&mu;</span></span>
+              <span><span class="math-var">&sigma;</span></span>
+            </span>
+          </div>
+          <ul style="font-size: 0.88rem; color: var(--text-muted); padding-left: 1.2rem; margin-top: 0.5rem;">
+            <li><strong><span class="math-var">Z</span> &gt; 0:</strong> El valor observado está por encima de la media poblacional.</li>
+            <li><strong><span class="math-var">Z</span> &lt; 0:</strong> El valor observado está por debajo de la media poblacional.</li>
+            <li><strong><span class="math-var">Z</span> = 0:</strong> El valor coincide exactamente con el promedio (<span class="math-var">x</span> = <span class="math-var">&mu;</span>).</li>
+          </ul>
+        </div>
+
+        <!-- Distribución Muestral y TLC -->
+        <div class="card">
+          <h3>1.3 Distribución Muestral y Teorema del Límite Central</h3>
+          <p style="color: var(--text-muted); font-size: 0.91rem;">
+            Al extraer muestras aleatorias de tamaño <span class="math-var">n</span>, la media muestral <span class="math-overline">X</span> presenta menor dispersión alrededor de <span class="math-var">&mu;</span>. Según el <strong>Teorema del Límite Central (TLC)</strong>, para <span class="math-var">n</span> &ge; 30 o poblaciones normales, <span class="math-overline">X</span> &sim; <i>N</i>(<span class="math-var">&mu;</span>, <span class="math-var">&sigma;</span><sup>2</sup>/<span class="math-var">n</span>):
+          </p>
+          <div class="eq-box">
+            <div>
+              <span><span class="math-var">&sigma;</span><sub><span class="math-overline">x</span></sub> =</span>
+              <span class="frac">
+                <span><span class="math-var">&sigma;</span></span>
+                <span class="sqrt">&radic;<span class="sqrt-rad"><span class="math-var">n</span></span></span>
+              </span>
+            </div>
+            <div>
+              <span><span class="math-var">Z</span> =</span>
+              <span class="frac">
+                <span><span class="math-overline">X</span> &minus; <span class="math-var">&mu;</span></span>
+                <span><span class="math-var">&sigma;</span> / <span class="sqrt">&radic;<span class="sqrt-rad"><span class="math-var">n</span></span></span></span>
+              </span>
+            </div>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--text-muted);">
+            El <strong>error estándar</strong> (<span class="math-var">&sigma;</span><sub><span class="math-overline">x</span></sub>) disminuye inversamente con la raíz cuadrada del tamaño de muestra <span class="math-var">n</span>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- SECCIÓN 2: 3 EJERCICIOS PRÁCTICOS PARA APLICAR LA CALCULADORA         -->
+    <!-- ===================================================================== -->
+    <section id="ejercicios-calculadora">
+      <div class="section-header">
+        <span class="section-kicker">Sección 02 &bull; Práctica Guiada</span>
+        <h2>Guía Práctica: 3 Ejercicios para Aplicar la Calculadora de Probabilidad</h2>
+        <p>
+          Analiza cada problemática ambiental o forestal, presiona <strong>&ldquo;Cargar datos en la calculadora&rdquo;</strong> para transferir automáticamente los parámetros al simulador y contrasta el comportamiento gráfico entre mediciones individuales (<span class="math-var">n</span> = 1) y promedios muestrales (<span class="math-var">n</span> &gt; 1).
+        </p>
+      </div>
+
+      <div class="grid-3">
+
+        <!-- EJERCICIO PRÁCTICO 1: CALIDAD DEL AIRE (PM10) -->
+        <article class="practice-card">
+          <div>
+            <span class="domain-tag">Ejercicio 01 &bull; Calidad del Aire</span>
+            <h3 style="font-size: 1.08rem; margin-bottom: 0.5rem;">Cumplimiento del ECA de Material Particulado (PM<sub>10</sub>)</h3>
+            <p style="font-size: 0.87rem; color: var(--text-muted);">
+              En una estación periurbana con vías sin asfaltar, la concentración diaria de PM<sub>10</sub> sigue una distribución normal con <strong><span class="math-var">&mu;</span> = 88 &mu;g/m<sup>3</sup></strong> y <strong><span class="math-var">&sigma;</span> = 18 &mu;g/m<sup>3</sup></strong>. El Estándar de Calidad Ambiental (ECA) diario es <strong>100 &mu;g/m<sup>3</sup></strong>.
+            </p>
+            <p style="font-size: 0.85rem; color: var(--slate-800); font-weight: 600; margin-top: 0.5rem;">
+              Evalúe la probabilidad de excedencia (&gt; 100 &mu;g/m<sup>3</sup>) en: (A) un día aislado (<span class="math-var">n</span> = 1) y (B) el promedio de una campaña de <span class="math-var">n</span> = 9 días.
+            </p>
+
+            <table class="param-table">
+              <thead>
+                <tr>
+                  <th>Parámetro</th>
+                  <th>Esc. A / Esc. B</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Media (<span class="math-var">&mu;</span>)</td>
+                  <td>88 &mu;g/m<sup>3</sup></td>
+                </tr>
+                <tr>
+                  <td>Desv. estándar (<span class="math-var">&sigma;</span>)</td>
+                  <td>18 &mu;g/m<sup>3</sup></td>
+                </tr>
+                <tr>
+                  <td>Tamaño muestra (<span class="math-var">n</span>)</td>
+                  <td>1 &nbsp;/&nbsp; 9</td>
+                </tr>
+                <tr>
+                  <td>Valor crítico (<span class="math-var">x</span> o <span class="math-overline">x</span>)</td>
+                  <td>100 &mu;g/m<sup>3</sup></td>
+                </tr>
+                <tr>
+                  <td>Tipo de probabilidad</td>
+                  <td>P(X &gt; x) Derecha</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <div class="btn-group">
+              <button type="button" class="btn-load" onclick="loadIntoCalculator(88, 18, 1, 100, 'upper')">
+                Cargar Escenario A (n=1)
+              </button>
+              <button type="button" class="btn-load secondary" onclick="loadIntoCalculator(88, 18, 9, 100, 'upper')">
+                Cargar Escenario B (n=9)
+              </button>
+            </div>
+
+            <details class="solution-box">
+              <summary>Ver solución paso a paso e interpretación &#9662;</summary>
+              <div class="solution-content">
+                <p><strong>Escenario A (<span class="math-var">n</span> = 1):</strong> SE = 18.00 &mu;g/m<sup>3</sup>; <span class="math-var">Z</span> = (100 &minus; 88)/18 = <strong>+0.6667</strong> &rarr; <strong>P(X &gt; 100) = 25.25%</strong>.</p>
+                <p><strong>Escenario B (<span class="math-var">n</span> = 9):</strong> SE = 18/&radic;9 = 6.00 &mu;g/m<sup>3</sup>; <span class="math-var">Z</span> = (100 &minus; 88)/6 = <strong>+2.0000</strong> &rarr; <strong>P(<span class="math-overline">X</span> &gt; 100) = 2.28%</strong>.</p>
+                <p style="margin-bottom: 0; color: var(--text-muted);">
+                  <em>Interpretación:</em> Aunque 1 de cada 4 días individuales excede el ECA por ráfagas de viento y tráfico, promediar 9 días estabiliza la dispersión y reduce la probabilidad de excedencia media al 2.28%.
+                </p>
+              </div>
+            </details>
+          </div>
+        </article>
+
+        <!-- EJERCICIO PRÁCTICO 2: TECNOLOGÍA DE LA MADERA -->
+        <article class="practice-card">
+          <div>
+            <span class="domain-tag">Ejercicio 02 &bull; Tecnología de la Madera</span>
+            <h3 style="font-size: 1.08rem; margin-bottom: 0.5rem;">Densidad Básica en Rodal Cosechable de Pino</h3>
+            <p style="font-size: 0.87rem; color: var(--text-muted);">
+              La densidad básica de la madera en un rodal cosechable presenta <strong><span class="math-var">&mu;</span> = 0.46 g/cm<sup>3</sup></strong> y <strong><span class="math-var">&sigma;</span> = 0.05 g/cm<sup>3</sup></strong>. Se extrae una muestra aleatoria de <strong><span class="math-var">n</span> = 25 probetas</strong> para control de calidad estructural.
+            </p>
+            <p style="font-size: 0.85rem; color: var(--slate-800); font-weight: 600; margin-top: 0.5rem;">
+              Calcule la probabilidad de que la densidad media muestral (<span class="math-overline">X</span>) sea inferior o igual al umbral mínimo estructural de <strong>0.44 g/cm<sup>3</sup></strong>.
+            </p>
+
+            <table class="param-table">
+              <thead>
+                <tr>
+                  <th>Parámetro</th>
+                  <th>Valor a ingresar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Media (<span class="math-var">&mu;</span>)</td>
+                  <td>0.46 g/cm<sup>3</sup></td>
+                </tr>
+                <tr>
+                  <td>Desv. estándar (<span class="math-var">&sigma;</span>)</td>
+                  <td>0.05 g/cm<sup>3</sup></td>
+                </tr>
+                <tr>
+                  <td>Tamaño muestra (<span class="math-var">n</span>)</td>
+                  <td>25</td>
+                </tr>
+                <tr>
+                  <td>Valor crítico (<span class="math-overline">x</span>)</td>
+                  <td>0.44 g/cm<sup>3</sup></td>
+                </tr>
+                <tr>
+                  <td>Tipo de probabilidad</td>
+                  <td>P(X &le; x) Izquierda</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <div class="btn-group">
+              <button type="button" class="btn-load" onclick="loadIntoCalculator(0.46, 0.05, 25, 0.44, 'lower')">
+                Cargar datos en la calculadora
+              </button>
+            </div>
+
+            <details class="solution-box">
+              <summary>Ver solución paso a paso e interpretación &#9662;</summary>
+              <div class="solution-content">
+                <p><strong>1. Error estándar:</strong> SE = 0.05 / &radic;25 = 0.05 / 5 = <strong>0.0100 g/cm<sup>3</sup></strong>.</p>
+                <p><strong>2. Puntaje Z:</strong> <span class="math-var">Z</span> = (0.44 &minus; 0.46) / 0.01 = <strong>&minus;2.0000</strong>.</p>
+                <p><strong>3. Probabilidad:</strong> <strong>P(<span class="math-overline">X</span> &le; 0.44) = 2.28%</strong> (0.0228).</p>
+                <p style="margin-bottom: 0; color: var(--text-muted);">
+                  <em>Significado del Z negativo:</em> Indica que el umbral de 0.44 g/cm<sup>3</sup> se ubica exactamente 2 errores estándar por debajo de la media del rodal, haciendo muy improbable rechazar el lote por baja densidad.
+                </p>
+              </div>
+            </details>
+          </div>
+        </article>
+
+        <!-- EJERCICIO PRÁCTICO 3: CALIDAD DEL AGUA / HIDROLOGÍA -->
+        <article class="practice-card">
+          <div>
+            <span class="domain-tag">Ejercicio 03 &bull; Calidad del Agua</span>
+            <h3 style="font-size: 1.08rem; margin-bottom: 0.5rem;">Oxígeno Disuelto (OD) en Río Altoandino</h3>
+            <p style="font-size: 0.87rem; color: var(--text-muted);">
+              En una subcuenca altoandina, el Oxígeno Disuelto (OD) registra una media histórica de <strong><span class="math-var">&mu;</span> = 6.8 mg/L</strong> y desviación estándar <strong><span class="math-var">&sigma;</span> = 1.2 mg/L</strong>. El estándar mínimo para conservación acuática es <strong>6.2 mg/L</strong>.
+            </p>
+            <p style="font-size: 0.85rem; color: var(--slate-800); font-weight: 600; margin-top: 0.5rem;">
+              Determine la probabilidad de que el promedio de una campaña de <strong><span class="math-var">n</span> = 16 puntos</strong> caiga por debajo de 6.2 mg/L y compárelo con una muestra puntual (<span class="math-var">n</span> = 1).
+            </p>
+
+            <table class="param-table">
+              <thead>
+                <tr>
+                  <th>Parámetro</th>
+                  <th>Muestra / Puntual</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Media (<span class="math-var">&mu;</span>)</td>
+                  <td>6.8 mg/L</td>
+                </tr>
+                <tr>
+                  <td>Desv. estándar (<span class="math-var">&sigma;</span>)</td>
+                  <td>1.2 mg/L</td>
+                </tr>
+                <tr>
+                  <td>Tamaño muestra (<span class="math-var">n</span>)</td>
+                  <td>16 &nbsp;/&nbsp; 1</td>
+                </tr>
+                <tr>
+                  <td>Valor crítico (<span class="math-overline">x</span> o <span class="math-var">x</span>)</td>
+                  <td>6.2 mg/L</td>
+                </tr>
+                <tr>
+                  <td>Tipo de probabilidad</td>
+                  <td>P(X &le; x) Izquierda</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <div class="btn-group">
+              <button type="button" class="btn-load" onclick="loadIntoCalculator(6.8, 1.2, 16, 6.2, 'lower')">
+                Cargar Campaña (n=16)
+              </button>
+              <button type="button" class="btn-load secondary" onclick="loadIntoCalculator(6.8, 1.2, 1, 6.2, 'lower')">
+                Cargar Puntual (n=1)
+              </button>
+            </div>
+
+            <details class="solution-box">
+              <summary>Ver solución paso a paso e interpretación &#9662;</summary>
+              <div class="solution-content">
+                <p><strong>Campaña (<span class="math-var">n</span> = 16):</strong> SE = 1.2 / &radic;16 = 0.30 mg/L; <span class="math-var">Z</span> = (6.2 &minus; 6.8)/0.30 = <strong>&minus;2.0000</strong> &rarr; <strong>P(<span class="math-overline">X</span> &le; 6.2) = 2.28%</strong>.</p>
+                <p><strong>Medición puntual (<span class="math-var">n</span> = 1):</strong> SE = 1.20 mg/L; <span class="math-var">Z</span> = (6.2 &minus; 6.8)/1.20 = <strong>&minus;0.5000</strong> &rarr; <strong>P(X &le; 6.2) = 30.85%</strong>.</p>
+                <p style="margin-bottom: 0; color: var(--text-muted);">
+                  <em>Interpretación:</em> Una medición puntual tiene casi 31% de probabilidad de caer bajo 6.2 mg/L por variación horaria natural, pero si el promedio de 16 estaciones cae bajo 6.2 mg/L, constituye una alerta ambiental significativa.
+                </p>
+              </div>
+            </details>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- SECCIÓN 3: CALCULADORA INTERACTIVA DE DISTRIBUCIÓN NORMAL Y MUESTRAL  -->
+    <!-- ===================================================================== -->
+    <section id="calculadora-interactiva">
+      <div class="section-header">
+        <span class="section-kicker">Sección 03 &bull; Laboratorio Interactivo</span>
+        <h2>Calculadora Interactiva de Distribución Normal y Muestral</h2>
+        <p>
+          Ingresa los parámetros manualmente o cárgalos desde los ejercicios superiores. Cuando <span class="math-var">n</span> &gt; 1, el gráfico muestra la curva poblacional en línea punteada y la distribución de medias muestrales en trazo sólido.
+        </p>
+      </div>
+
+      <div id="calc-box" class="calc-wrapper">
+        <div class="calc-grid">
+
+          <!-- Panel Izquierdo: Controles y Resultados -->
+          <div class="calc-controls">
+            <div class="input-row">
+              <div class="field">
+                <label for="calc-mu">Media (<span class="math-var">&mu;</span>)</label>
+                <input id="calc-mu" type="number" step="any" value="88" />
+              </div>
+              <div class="field">
+                <label for="calc-sigma">Desv. estándar (<span class="math-var">&sigma;</span>)</label>
+                <input id="calc-sigma" type="number" step="any" min="0.0001" value="18" />
+              </div>
+            </div>
+
+            <div class="input-row">
+              <div class="field">
+                <label for="calc-n">Tamaño muestra (<span class="math-var">n</span>)</label>
+                <input id="calc-n" type="number" step="1" min="1" value="1" />
+              </div>
+              <div class="field">
+                <label for="calc-x">Valor crítico (<span class="math-var">x</span> o <span class="math-overline">x</span>)</label>
+                <input id="calc-x" type="number" step="any" value="100" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="calc-tail">Tipo de probabilidad</label>
+              <select id="calc-tail">
+                <option value="upper">P(X &gt; x) &mdash; Cola derecha (Excedencia)</option>
+                <option value="lower">P(X &le; x) &mdash; Cola izquierda (Acumulada)</option>
+              </select>
+            </div>
+
+            <div class="metrics-grid">
+              <div class="metric-card">
+                <div class="metric-label">Error Est. (SE)</div>
+                <div id="res-se" class="metric-value">18.0000</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-label">Puntaje Z</div>
+                <div id="res-z" class="metric-value">+0.6667</div>
+              </div>
+              <div class="metric-card primary">
+                <div class="metric-label">Probabilidad</div>
+                <div id="res-prob" class="metric-value">25.25%</div>
+              </div>
+            </div>
+
+            <div id="res-detail" style="font-size: 0.78rem; color: var(--text-muted); background: #ffffff; padding: 0.65rem 0.75rem; border-radius: 8px; border: 1px solid var(--border-color);">
+              Evaluando variable individual <strong>X &sim; N(88, 18&sup2;)</strong>. Probabilidad decimal: <strong>0.252493</strong>.
+            </div>
+          </div>
+
+          <!-- Panel Derecho: Gráfico SVG Dinámico -->
+          <div class="svg-stage">
+            <div class="svg-caption">
+              <strong id="svg-title" style="color: var(--slate-900);">Distribución Individual: X &sim; N(88, 18&sup2;)</strong>
+              <div class="legend-items">
+                <span><i class="legend-dot" style="background: rgba(45, 106, 79, 0.42); border: 1px solid #1b4332;"></i>Área probabilidad</span>
+                <span><i class="legend-dot" style="background: #dc2626;"></i>Valor crítico</span>
+                <span id="legend-pop" style="display: none;"><i class="legend-dot" style="background: #94a3b8;"></i>Población (n=1)</span>
+              </div>
+            </div>
+
+            <svg id="normalSvg" viewBox="0 0 680 310" style="width: 100%; height: auto; display: block;" role="img" aria-label="Gráfico interactivo de la distribución normal y muestral">
+              <defs>
+                <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#2d6a4f" stop-opacity="0.48" />
+                  <stop offset="100%" stop-color="#2d6a4f" stop-opacity="0.14" />
+                </linearGradient>
+              </defs>
+
+              <!-- Fondo cuadrícula suave -->
+              <rect x="44" y="22" width="612" height="236" fill="#ffffff" rx="6" stroke="#e2e8f0" stroke-width="1" />
+
+              <!-- Curva poblacional de referencia (visible cuando n > 1) -->
+              <path id="svg-pop-curve" d="" fill="none" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="5,4" />
+
+              <!-- Área sombreada de probabilidad -->
+              <path id="svg-shaded-area" d="" fill="url(#areaGrad)" />
+
+              <!-- Curva principal activa -->
+              <path id="svg-main-curve" d="" fill="none" stroke="#1b4332" stroke-width="2.6" stroke-linecap="round" />
+
+              <!-- Línea de la media mu -->
+              <line id="svg-mu-line" x1="350" y1="26" x2="350" y2="258" stroke="#64748b" stroke-width="1.2" stroke-dasharray="3,3" />
+
+              <!-- Línea del valor crítico x -->
+              <line id="svg-crit-line" x1="400" y1="24" x2="400" y2="258" stroke="#dc2626" stroke-width="2" />
+              <text id="svg-crit-label" x="406" y="40" fill="#dc2626" font-size="11.5" font-weight="700">x = 100</text>
+
+              <!-- Eje X -->
+              <line x1="44" y1="258" x2="656" y2="258" stroke="#64748b" stroke-width="1.5" />
+
+              <!-- Grupo de etiquetas eje X -->
+              <g id="svg-xaxis-labels"></g>
+            </svg>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- SECCIÓN 4: EJERCICIOS DEMOSTRATIVOS AVANZADOS CON PYTHON              -->
+    <!-- ===================================================================== -->
+    <section id="casos-python">
+      <div class="section-header">
+        <span class="section-kicker">Sección 04 &bull; Reproducibilidad Computacional</span>
+        <h2>Ejercicios Demostrativos</h2>
+        <p>
+          Implementación completa con <code>scipy.stats</code>, <code>numpy</code> y <code>matplotlib</code> lista para ejecutar en Google Colab o Jupyter Notebook.
+        </p>
+      </div>
+
+      <!-- CASO PYTHON 1: CALIDAD DEL AIRE -->
+      <article class="case-card">
+        <div class="case-header">
+          <div>
+            <span class="case-badge">Caso Python 01</span>
+            <strong>Calidad del Aire: Excedencia Normativa ECA y Percentil 95 de PM<sub>10</sub></strong>
+          </div>
+          <span style="font-family: monospace; font-size: 0.82rem; color: #cbd5e1;">X &sim; N(78, 16&sup2;)</span>
+        </div>
+        <div class="case-body">
+          <div class="problem-banner banner-amber">
+            <strong style="color: var(--amber-900); display: block; margin-bottom: 0.25rem;">Problemática Ambiental:</strong>
+            En una estación de monitoreo atmosférico urbano-industrial, la concentración diaria de PM<sub>10</sub> sigue una distribución normal con <span class="math-var">&mu;</span> = 78 &mu;g/m<sup>3</sup> y <span class="math-var">&sigma;</span> = 16 &mu;g/m<sup>3</sup>. Se requiere calcular: (a) la probabilidad diaria de exceder el ECA de 100 &mu;g/m<sup>3</sup> y (b) el percentil 95 (<i>P</i><sub>95</sub>) para activar protocolos de alerta temprana.
+          </div>
+
+          <div>
+            <div class="code-header">
+              <strong style="font-size: 0.82rem; color: var(--slate-800);">Script en Python (SciPy + Matplotlib)</strong>
+              <button type="button" class="btn-copy" onclick="copyCode('py-code-1', this)">Copiar código</button>
+            </div>
+            <pre class="code-block"><code id="py-code-1">import numpy as np
+import scipy.stats as stats
+import matplotlib.pyplot as plt
+
+# 1. Parámetros poblacionales de PM10 (µg/m³)
+mu = 78.0
+sigma = 16.0
+eca_limite = 100.0
+
+# 2. Puntaje Z y probabilidad de excedencia P(X > 100)
+z_eca = (eca_limite - mu) / sigma
+prob_excedencia = stats.norm.sf(eca_limite, loc=mu, scale=sigma)  # 1 - CDF
+
+# 3. Percentil 95 (cálculo inverso)
+p95_conc = stats.norm.ppf(0.95, loc=mu, scale=sigma)
+z_p95 = stats.norm.ppf(0.95)
+
+print(f"Puntaje Z para ECA (100 µg/m³) : {z_eca:.4f}")
+print(f"Probabilidad P(X > 100)        : {prob_excedencia:.6f} ({prob_excedencia*100:.2f}%)")
+print(f"Días esperados al año > ECA    : {prob_excedencia * 365:.1f} días/año")
+print(f"Concentración Percentil 95     : {p95_conc:.2f} µg/m³ (Z = {z_p95:.4f})")</code></pre>
+          </div>
+
+          <div class="console-out">
+            <strong>Salida de consola esperada:</strong><br/>
+            Puntaje Z para ECA (100 &mu;g/m&sup3;) : 1.3750<br/>
+            Probabilidad P(X &gt; 100) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 0.084566 (8.46%)<br/>
+            D&iacute;as esperados al a&ntilde;o &gt; ECA &nbsp;&nbsp;&nbsp;: 30.9 d&iacute;as/a&ntilde;o<br/>
+            Concentraci&oacute;n Percentil 95 &nbsp;&nbsp;&nbsp;&nbsp;: 104.32 &mu;g/m&sup3; (Z = 1.6449)
+          </div>
+        </div>
+      </article>
+
+      <!-- CASO PYTHON 2: DASOMETRÍA FORESTAL -->
+      <article class="case-card">
+        <div class="case-header">
+          <div>
+            <span class="case-badge">Caso Python 02</span>
+            <strong>Dasometría Forestal: Estructura Diamétrica (DAP) en Bosque de <em>Polylepis</em></strong>
+          </div>
+          <span style="font-family: monospace; font-size: 0.82rem; color: #cbd5e1;">X &sim; N(18.5, 4.2&sup2;)</span>
+        </div>
+        <div class="case-body">
+          <div class="problem-banner banner-forest">
+            <strong style="color: var(--forest-800); display: block; margin-bottom: 0.25rem;">Problemática Forestal:</strong>
+            En un inventario forestal de un rodal altoandino de queñua (<em>Polylepis</em> spp.), el Diámetro a la Altura del Pecho (DAP) se distribuye normalmente con <span class="math-var">&mu;</span> = 18.5 cm y <span class="math-var">&sigma;</span> = 4.2 cm. Se desea estimar: (a) la proporción de fustales intermedios (15 cm &le; DAP &le; 25 cm) y (b) el porcentaje de regeneración avanzada (DAP &lt; 12 cm).
+          </div>
+
+          <div>
+            <div class="code-header">
+              <strong style="font-size: 0.82rem; color: var(--slate-800);">Script en Python (Probabilidad por Intervalos y Colas)</strong>
+              <button type="button" class="btn-copy" onclick="copyCode('py-code-2', this)">Copiar código</button>
+            </div>
+            <pre class="code-block"><code id="py-code-2">import scipy.stats as stats
+
+# 1. Parámetros dasométricos del rodal (cm)
+mu_dap = 18.5
+sigma_dap = 4.2
+
+# 2. Intervalo fustal P(15 <= DAP <= 25)
+z1 = (15.0 - mu_dap) / sigma_dap
+z2 = (25.0 - mu_dap) / sigma_dap
+prob_fustal = stats.norm.cdf(25.0, mu_dap, sigma_dap) - stats.norm.cdf(15.0, mu_dap, sigma_dap)
+
+# 3. Regeneración avanzada P(DAP < 12)
+z3 = (12.0 - mu_dap) / sigma_dap
+prob_regen = stats.norm.cdf(12.0, mu_dap, sigma_dap)
+
+print(f"Puntajes Z intervalo [15, 25] : Z1 = {z1:.4f}, Z2 = {z2:.4f}")
+print(f"Proporción fustal [15-25 cm]  : {prob_fustal:.6f} ({prob_fustal*100:.2f}%)")
+print(f"Regeneración avanzada (<12 cm): {prob_regen:.6f} ({prob_regen*100:.2f}%, Z3 = {z3:.4f})")</code></pre>
+          </div>
+
+          <div class="console-out">
+            <strong>Salida de consola esperada:</strong><br/>
+            Puntajes Z intervalo [15, 25] : Z1 = -0.8333, Z2 = 1.5476<br/>
+            Proporci&oacute;n fustal [15-25 cm] &nbsp;: 0.736814 (73.68%)<br/>
+            Regeneraci&oacute;n avanzada (&lt;12 cm): 0.060858 (6.09%, Z3 = -1.5476)
+          </div>
+        </div>
+      </article>
+
+      <!-- CASO PYTHON 3: HIDROBIOLOGÍA Y SIMULACIÓN MONTE CARLO DEL TLC -->
+      <article class="case-card">
+        <div class="case-header">
+          <div>
+            <span class="case-badge">Caso Python 03</span>
+            <strong>Hidrobiología y TLC: Simulación Monte Carlo de Oxígeno Disuelto (OD)</strong>
+          </div>
+          <span style="font-family: monospace; font-size: 0.82rem; color: #cbd5e1;">n = 1 vs. n = 25</span>
+        </div>
+        <div class="case-body">
+          <div class="problem-banner banner-sky">
+            <strong style="color: var(--sky-900); display: block; margin-bottom: 0.25rem;">Problemática Hidrobiológica:</strong>
+            En un tributario altoandino, el Oxígeno Disuelto (OD) presenta <span class="math-var">&mu;</span> = 6.2 mg/L y <span class="math-var">&sigma;</span> = 1.1 mg/L. El umbral crítico para fauna íctica es 5.5 mg/L. Mediante simulación Monte Carlo de 100,000 campañas de <span class="math-var">n</span> = 25 estaciones, verificamos el Teorema del Límite Central frente a una medición puntual (<span class="math-var">n</span> = 1).
+          </div>
+
+          <div>
+            <div class="code-header">
+              <strong style="font-size: 0.82rem; color: var(--slate-800);">Script en Python (Distribución Muestral y Simulación Monte Carlo)</strong>
+              <button type="button" class="btn-copy" onclick="copyCode('py-code-3', this)">Copiar código</button>
+            </div>
+            <pre class="code-block"><code id="py-code-3">import numpy as np
+import scipy.stats as stats
+
+mu_od, sigma_od, umbral, n = 6.2, 1.1, 5.5, 25
+
+# Medición puntual (n = 1) vs Distribución muestral (n = 25)
+prob_puntual = stats.norm.cdf(umbral, loc=mu_od, scale=sigma_od)
+error_estandar = sigma_od / np.sqrt(n)
+prob_muestral = stats.norm.cdf(umbral, loc=mu_od, scale=error_estandar)
+
+# Simulación Monte Carlo (100,000 campañas de 25 estaciones)
+rng = np.random.default_rng(seed=42)
+medias_campana = rng.normal(loc=mu_od, scale=sigma_od, size=(100_000, n)).mean(axis=1)
+prob_mc = np.mean(medias_campana < umbral)
+
+print(f"Puntual (n=1)  -> P(X < 5.5)  : {prob_puntual*100:.2f}%")
+print(f"Error estándar (n=25)         : {error_estandar:.4f} mg/L")
+print(f"Muestral (n=25)-> P(X̄ < 5.5)  : {prob_muestral*100:.4f}%")
+print(f"Simulación Monte Carlo TLC    : {prob_mc*100:.4f}%")</code></pre>
+          </div>
+
+          <div class="console-out">
+            <strong>Salida de consola esperada:</strong><br/>
+            Puntual (n=1) &nbsp;-&gt; P(X &lt; 5.5) &nbsp;: 26.23%<br/>
+            Error est&aacute;ndar (n=25) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 0.2200 mg/L<br/>
+            Muestral (n=25)-&gt; P(X&#772; &lt; 5.5) &nbsp;: 0.0732%<br/>
+            Simulaci&oacute;n Monte Carlo TLC &nbsp;&nbsp;&nbsp;: 0.0740%
+          </div>
+        </div>
+      </article>
+
+      <!-- CASO PYTHON 4: EDAFOLOGÍA Y CARBONO ORGÁNICO DEL SUELO -->
+      <article class="case-card">
+        <div class="case-header">
+          <div>
+            <span class="case-badge">Caso Python 04</span>
+            <strong>Edafología de Bofedales: Límites de Control para Carbono Orgánico del Suelo (COS)</strong>
+          </div>
+          <span style="font-family: monospace; font-size: 0.82rem; color: #cbd5e1;">X&#772; &sim; N(145, (28/&radic;16)&sup2;)</span>
+        </div>
+        <div class="case-body">
+          <div class="problem-banner banner-forest">
+            <strong style="color: var(--forest-800); display: block; margin-bottom: 0.25rem;">Problemática Edafológica y MRV de Carbono:</strong>
+            En bofedales conservados, el almacenamiento de Carbono Orgánico del Suelo (COS) presenta <span class="math-var">&mu;</span> = 145 t C/ha y <span class="math-var">&sigma;</span> = 28 t C/ha. En parcelas de <span class="math-var">n</span> = 16 submuestras, se evalúa el riesgo de alerta por degradación (&lt; 132 t C/ha) y se construyen los límites de control de &plusmn;2 errores estándar.
+          </div>
+
+          <div>
+            <div class="code-header">
+              <strong style="font-size: 0.82rem; color: var(--slate-800);">Script en Python (Auditoría de Inventarios de Carbono)</strong>
+              <button type="button" class="btn-copy" onclick="copyCode('py-code-4', this)">Copiar código</button>
+            </div>
+            <pre class="code-block"><code id="py-code-4">import numpy as np
+import scipy.stats as stats
+
+mu_cos, sigma_cos, n_sub, alerta = 145.0, 28.0, 16, 132.0
+
+se_cos = sigma_cos / np.sqrt(n_sub)
+z_alerta = (alerta - mu_cos) / se_cos
+prob_alerta = stats.norm.cdf(alerta, loc=mu_cos, scale=se_cos)
+
+lci = mu_cos - 2 * se_cos
+lcs = mu_cos + 2 * se_cos
+
+print(f"Error estándar (n=16)          : {se_cos:.4f} t C/ha")
+print(f"Puntaje Z para X̄ = 132 t C/ha  : {z_alerta:.4f}")
+print(f"Probabilidad P(X̄ < 132)        : {prob_alerta*100:.2f}%")
+print(f"Límites Control (±2 SE)        : [{lci:.2f}, {lcs:.2f}] t C/ha")</code></pre>
+          </div>
+
+          <div class="console-out">
+            <strong>Salida de consola esperada:</strong><br/>
+            Error est&aacute;ndar (n=16) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 7.0000 t C/ha<br/>
+            Puntaje Z para X&#772; = 132 t C/ha &nbsp;: -1.8571<br/>
+            Probabilidad P(X&#772; &lt; 132) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 3.16%<br/>
+            L&iacute;mites Control (&plusmn;2 SE) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: [131.00, 159.00] t C/ha
+          </div>
+        </div>
+      </article>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>Material Académico Autocontenido &bull; Estadística Aplicada a Ingeniería Ambiental y Forestal</span>
+      <span>100% HTML/CSS/SVG Nativo &bull; Exportación PDF y Modo Offline Verificados</span>
+    </div>
+  </footer>
+
+  <!-- Motor JavaScript Autocontenido -->
+  <script>
+    // Aproximación polinómica racional (Abramowitz & Stegun) para la CDF Normal Estándar Φ(z)
+    function normalCDF(z) {
+      const sign = z < 0 ? -1 : 1;
+      const x = Math.abs(z) / Math.sqrt(2);
+      const t = 1 / (1 + 0.3275911 * x);
+      const a1 = 0.254829592;
+      const a2 = -0.284496736;
+      const a3 = 1.421413741;
+      const a4 = -1.453152027;
+      const a5 = 1.061405429;
+      const erf = 1 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+      return 0.5 * (1 + sign * erf);
+    }
+
+    function normalPDF(x, mu, sigma) {
+      const coef = 1 / (sigma * Math.sqrt(2 * Math.PI));
+      const exp = -0.5 * Math.pow((x - mu) / sigma, 2);
+      return coef * Math.exp(exp);
+    }
+
+    // Formateo inteligente de decimales según magnitud de los datos
+    function formatNum(val, refScale) {
+      if (Math.abs(refScale) < 0.2) return val.toFixed(3);
+      if (Math.abs(refScale) < 5) return val.toFixed(2);
+      return val.toFixed(1);
+    }
+
+    // Carga directa de parámetros desde los ejercicios hacia la calculadora
+    function loadIntoCalculator(mu, sigma, n, xVal, tail) {
+      document.getElementById('calc-mu').value = mu;
+      document.getElementById('calc-sigma').value = sigma;
+      document.getElementById('calc-n').value = n;
+      document.getElementById('calc-x').value = xVal;
+      document.getElementById('calc-tail').value = tail;
+
+      updateCalculator();
+
+      const calcSection = document.getElementById('calculadora-interactiva');
+      const calcBox = document.getElementById('calc-box');
+      if (calcSection) {
+        calcSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      if (calcBox) {
+        calcBox.classList.remove('highlight-pulse');
+        void calcBox.offsetWidth; // reinicia animación
+        calcBox.classList.add('highlight-pulse');
+      }
+    }
+
+    // Actualización de métricas y gráfico SVG dinámico
+    function updateCalculator() {
+      const mu = parseFloat(document.getElementById('calc-mu').value);
+      const rawSigma = parseFloat(document.getElementById('calc-sigma').value);
+      const rawN = parseFloat(document.getElementById('calc-n').value);
+      const xVal = parseFloat(document.getElementById('calc-x').value);
+      const tail = document.getElementById('calc-tail').value;
+
+      const validMu = isNaN(mu) ? 0 : mu;
+      const sigma = (!isNaN(rawSigma) && rawSigma > 0) ? rawSigma : 1;
+      const n = (!isNaN(rawN) && rawN >= 1) ? Math.floor(rawN) : 1;
+      const validX = isNaN(xVal) ? validMu : xVal;
+
+      const se = sigma / Math.sqrt(n);
+      const z = (validX - validMu) / se;
+      const cdf = normalCDF(z);
+      const prob = tail === 'upper' ? (1 - cdf) : cdf;
+
+      document.getElementById('res-se').textContent = se.toFixed(4);
+      document.getElementById('res-z').textContent = (z >= 0 ? '+' : '') + z.toFixed(4);
+      document.getElementById('res-prob').textContent = (prob * 100).toFixed(2) + '%';
+
+      const varSymbol = n > 1 ? 'X̄' : 'X';
+      const opSymbol = tail === 'upper' ? '>' : '≤';
+      document.getElementById('res-detail').innerHTML =
+        `Evaluando <strong>P(${varSymbol} ${opSymbol} ${validX})</strong> con SE = <strong>${se.toFixed(4)}</strong>. Probabilidad exacta: <strong>${prob.toFixed(6)}</strong> (${(prob * 100).toFixed(2)}%).`;
+
+      document.getElementById('svg-title').textContent =
+        n > 1
+          ? `Distribución Muestral (n = ${n}): X̄ ~ N(${validMu}, ${se.toFixed(3)}²)`
+          : `Distribución Individual (n = 1): X ~ N(${validMu}, ${sigma}²)`;
+
+      document.getElementById('legend-pop').style.display = n > 1 ? 'inline-block' : 'none';
+
+      renderSVGChart(validMu, sigma, se, validX, tail, n);
+    }
+
+    function renderSVGChart(mu, sigma, se, xVal, tail, n) {
+      const leftX = 44;
+      const rightX = 656;
+      const baseY = 258;
+      const topY = 34;
+      const plotW = rightX - leftX;
+      const plotH = baseY - topY;
+
+      // Rango horizontal: si n > 1 pero <= 36 usamos escala poblacional para apreciar el estrechamiento TLC;
+      // si n es muy grande, ajustamos escala para mantener legibilidad visual.
+      const spanSigma = n > 1 ? Math.max(4 * se, 2.6 * sigma) : 4 * sigma;
+      const minX = mu - spanSigma;
+      const maxX = mu + spanSigma;
+
+      // Altura máxima normalizada a la curva activa (se)
+      const peakActive = normalPDF(mu, mu, se);
+
+      const toSvgX = (val) => leftX + ((val - minX) / (maxX - minX)) * plotW;
+      const toSvgY = (dens) => baseY - (dens / peakActive) * plotH;
+
+      // 1. Curva poblacional de referencia (si n > 1)
+      const popPathEl = document.getElementById('svg-pop-curve');
+      if (n > 1) {
+        let dPop = '';
+        const stepsPop = 180;
+        for (let i = 0; i <= stepsPop; i++) {
+          const xv = minX + (i / stepsPop) * (maxX - minX);
+          const sx = toSvgX(xv).toFixed(2);
+          const sy = toSvgY(normalPDF(xv, mu, sigma)).toFixed(2);
+          dPop += (i === 0 ? `M ${sx} ${sy}` : ` L ${sx} ${sy}`);
+        }
+        popPathEl.setAttribute('d', dPop);
+      } else {
+        popPathEl.setAttribute('d', '');
+      }
+
+      // 2. Curva principal activa (con desviación = se)
+      let dMain = '';
+      const stepsMain = 220;
+      for (let i = 0; i <= stepsMain; i++) {
+        const xv = minX + (i / stepsMain) * (maxX - minX);
+        const sx = toSvgX(xv).toFixed(2);
+        const sy = toSvgY(normalPDF(xv, mu, se)).toFixed(2);
+        dMain += (i === 0 ? `M ${sx} ${sy}` : ` L ${sx} ${sy}`);
+      }
+      document.getElementById('svg-main-curve').setAttribute('d', dMain);
+
+      // 3. Área sombreada bajo la curva activa
+      const clampedX = Math.max(minX, Math.min(maxX, xVal));
+      const startX = tail === 'upper' ? clampedX : minX;
+      const endX = tail === 'upper' ? maxX : clampedX;
+
+      const areaEl = document.getElementById('svg-shaded-area');
+      if (endX > startX) {
+        let dArea = `M ${toSvgX(startX).toFixed(2)} ${baseY}`;
+        const areaSteps = 160;
+        for (let i = 0; i <= areaSteps; i++) {
+          const xv = startX + (i / areaSteps) * (endX - startX);
+          const sx = toSvgX(xv).toFixed(2);
+          const sy = toSvgY(normalPDF(xv, mu, se)).toFixed(2);
+          dArea += ` L ${sx} ${sy}`;
+        }
+        dArea += ` L ${toSvgX(endX).toFixed(2)} ${baseY} Z`;
+        areaEl.setAttribute('d', dArea);
+      } else {
+        areaEl.setAttribute('d', '');
+      }
+
+      // 4. Línea de la media μ
+      const muPx = toSvgX(mu).toFixed(2);
+      const muLine = document.getElementById('svg-mu-line');
+      muLine.setAttribute('x1', muPx);
+      muLine.setAttribute('x2', muPx);
+
+      // 5. Línea y etiqueta del valor crítico x
+      const critLine = document.getElementById('svg-crit-line');
+      const critLabel = document.getElementById('svg-crit-label');
+      const critPx = toSvgX(clampedX);
+
+      critLine.setAttribute('x1', critPx.toFixed(2));
+      critLine.setAttribute('x2', critPx.toFixed(2));
+
+      const labelPrefix = n > 1 ? 'x̄' : 'x';
+      critLabel.textContent = `${labelPrefix} = ${xVal}`;
+      if (critPx > rightX - 95) {
+        critLabel.setAttribute('x', (critPx - 7).toFixed(2));
+        critLabel.setAttribute('text-anchor', 'end');
+      } else {
+        critLabel.setAttribute('x', (critPx + 7).toFixed(2));
+        critLabel.setAttribute('text-anchor', 'start');
+      }
+
+      // 6. Etiquetas dinámicas del eje X
+      const axisGroup = document.getElementById('svg-xaxis-labels');
+      axisGroup.innerHTML = '';
+      const ticks = 7;
+      for (let i = 0; i <= ticks; i++) {
+        const val = minX + (i / ticks) * (maxX - minX);
+        const px = toSvgX(val);
+
+        const tickLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        tickLine.setAttribute('x1', px.toFixed(2));
+        tickLine.setAttribute('y1', baseY);
+        tickLine.setAttribute('x2', px.toFixed(2));
+        tickLine.setAttribute('y2', baseY + 5);
+        tickLine.setAttribute('stroke', '#64748b');
+        tickLine.setAttribute('stroke-width', '1.2');
+        axisGroup.appendChild(tickLine);
+
+        const textEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        textEl.setAttribute('x', px.toFixed(2));
+        textEl.setAttribute('y', baseY + 19);
+        textEl.setAttribute('text-anchor', 'middle');
+        textEl.setAttribute('fill', '#334155');
+        textEl.setAttribute('font-size', '11');
+        textEl.setAttribute('font-family', 'ui-monospace, monospace');
+        textEl.textContent = formatNum(val, se);
+        axisGroup.appendChild(textEl);
+      }
+    }
+
+    // Copiado al portapapeles compatible con entornos embebidos
+    function copyCode(elementId, btnElement) {
+      const codeEl = document.getElementById(elementId);
+      if (!codeEl) return;
+      const textarea = document.createElement('textarea');
+      textarea.value = codeEl.textContent;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        const originalText = btnElement.textContent;
+        btnElement.textContent = '¡Copiado!';
+        btnElement.style.background = '#1b4332';
+        setTimeout(() => {
+          btnElement.textContent = originalText;
+          btnElement.style.background = '';
+        }, 1600);
+      } catch (err) {
+        console.error('No se pudo copiar:', err);
+      } finally {
+        document.body.removeChild(textarea);
+      }
+    }
+
+    ['calc-mu', 'calc-sigma', 'calc-n', 'calc-x', 'calc-tail'].forEach((id) => {
+      document.getElementById(id).addEventListener('input', updateCalculator);
+    });
+
+    window.addEventListener('DOMContentLoaded', updateCalculator);
+  </script>
+</body>
+</html>
